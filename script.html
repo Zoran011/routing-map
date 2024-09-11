@@ -1,0 +1,44 @@
+<script>
+    function updateLocation(map) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+
+                // Remove existing marker if any
+                if (window.currentLocationMarker) {
+                    map.removeLayer(window.currentLocationMarker);
+                }
+
+                // Add new marker
+                window.currentLocationMarker = L.marker([lat, lon], {
+                    icon: L.icon({
+                        iconUrl: 'https://iconarchive.com/download/i106847/google/noto-emoji-animals-nature/animal-dog.ico', // Replace with desired icon
+                        iconSize: [32, 32],
+                    })
+                }).addTo(map).bindPopup("Current Location");
+
+                // Center the map on the current location
+                map.setView([lat, lon], 15);
+            }, function(error) {
+                console.log("Geolocation error: " + error.message);
+            }, {
+                enableHighAccuracy: true
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize map
+        var map = L.map('map').setView([44.8176, 20.4633], 7); // Default center on Serbia
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Call the function to update location
+        updateLocation(map);
+    });
+</script>
